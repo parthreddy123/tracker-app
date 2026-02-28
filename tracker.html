@@ -129,54 +129,54 @@ const CATEGORIES = [
 ];
 
 const DEFAULT_TASKS = [
-  // Malaysia Exit
-  { id: 1, cat: 'malaysia_exit', task: 'Cancel/transfer rental lease agreement', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 2, cat: 'malaysia_exit', task: 'Close Malaysian bank accounts or convert to NR status', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 3, cat: 'malaysia_exit', task: 'Cancel Malaysian phone plan / port number', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 4, cat: 'malaysia_exit', task: 'File final Malaysian tax return / get tax clearance', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 5, cat: 'malaysia_exit', task: 'Cancel work permit / employment pass', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 6, cat: 'malaysia_exit', task: 'Settle utility bills (electricity, water, internet)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 7, cat: 'malaysia_exit', task: 'Ship / sell furniture & belongings', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 8, cat: 'malaysia_exit', task: 'Collect all deposits (rental, utilities)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 9, cat: 'malaysia_exit', task: 'Get employer relieving letter / experience certificate', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 10, cat: 'malaysia_exit', task: 'Book flights to Mumbai', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  // Malaysia Exit — move to Mumbai: April 9
+  { id: 1, cat: 'malaysia_exit', task: 'Cancel/transfer rental lease agreement', priority: 'high', status: 'pending', due: '2026-03-09', owner: '', notes: 'Give landlord 30-day notice' },
+  { id: 2, cat: 'malaysia_exit', task: 'Close Malaysian bank accounts or convert to NR status', priority: 'high', status: 'pending', due: '2026-04-05', owner: '', notes: '' },
+  { id: 3, cat: 'malaysia_exit', task: 'Cancel Malaysian phone plan / port number', priority: 'medium', status: 'pending', due: '2026-04-07', owner: '', notes: '' },
+  { id: 4, cat: 'malaysia_exit', task: 'File final Malaysian tax return / get tax clearance', priority: 'high', status: 'pending', due: '2026-03-20', owner: '', notes: 'Tax clearance needed before exit' },
+  { id: 5, cat: 'malaysia_exit', task: 'Cancel work permit / employment pass', priority: 'high', status: 'pending', due: '2026-03-25', owner: '', notes: '' },
+  { id: 6, cat: 'malaysia_exit', task: 'Settle utility bills (electricity, water, internet)', priority: 'medium', status: 'pending', due: '2026-04-05', owner: '', notes: '' },
+  { id: 7, cat: 'malaysia_exit', task: 'Ship / sell furniture & belongings', priority: 'medium', status: 'pending', due: '2026-03-25', owner: '', notes: '' },
+  { id: 8, cat: 'malaysia_exit', task: 'Collect all deposits (rental, utilities)', priority: 'medium', status: 'pending', due: '2026-04-06', owner: '', notes: '' },
+  { id: 9, cat: 'malaysia_exit', task: 'Get employer relieving letter / experience certificate', priority: 'high', status: 'pending', due: '2026-03-15', owner: '', notes: '' },
+  { id: 10, cat: 'malaysia_exit', task: 'Book flights to Mumbai', priority: 'high', status: 'pending', due: '2026-03-08', owner: '', notes: 'Flying out April 9' },
 
-  // Marriage & Registration
-  { id: 11, cat: 'marriage', task: 'Collect documents for marriage registration (birth certs, ID, photos)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 12, cat: 'marriage', task: 'Submit marriage notice at registrar office (30-day notice)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 13, cat: 'marriage', task: 'Arrange two witnesses for registration day', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 14, cat: 'marriage', task: 'Book marriage registration date & venue', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 15, cat: 'marriage', task: 'Get marriage certificate copies', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 16, cat: 'marriage', task: 'Update name/marital status on passport & documents', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  // Marriage — registration: March 31, marriage: May 9
+  { id: 11, cat: 'marriage', task: 'Collect documents for marriage registration (birth certs, ID, photos)', priority: 'high', status: 'pending', due: '2026-03-15', owner: '', notes: '' },
+  { id: 12, cat: 'marriage', task: 'Submit marriage notice at registrar office (30-day notice)', priority: 'high', status: 'pending', due: '2026-03-01', owner: '', notes: '30 days before March 31 registration' },
+  { id: 13, cat: 'marriage', task: 'Arrange two witnesses for registration day', priority: 'medium', status: 'pending', due: '2026-03-25', owner: '', notes: 'Needed for March 31' },
+  { id: 14, cat: 'marriage', task: 'Book marriage registration date & venue', priority: 'high', status: 'pending', due: '2026-03-05', owner: '', notes: 'Registration: March 31' },
+  { id: 15, cat: 'marriage', task: 'Get marriage certificate copies', priority: 'medium', status: 'pending', due: '2026-04-05', owner: '', notes: 'After March 31 registration' },
+  { id: 16, cat: 'marriage', task: 'Update name/marital status on passport & documents', priority: 'medium', status: 'pending', due: '2026-05-20', owner: '', notes: 'After May 9 marriage' },
 
-  // Mumbai Relocation
-  { id: 17, cat: 'relocation', task: 'Find apartment in Mumbai (shortlist areas)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 18, cat: 'relocation', task: 'Sign rental agreement & pay deposit', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 19, cat: 'relocation', task: 'Set up Mumbai utilities (electricity, gas, internet)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 20, cat: 'relocation', task: 'Get Indian SIM card / phone plan', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 21, cat: 'relocation', task: 'Update address on Aadhaar / PAN / voter ID', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 22, cat: 'relocation', task: 'Arrange shipping of belongings MY → India', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 23, cat: 'relocation', task: 'Research schools / local amenities in area', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+  // Mumbai Relocation — arrive April 9
+  { id: 17, cat: 'relocation', task: 'Find apartment in Mumbai (shortlist areas)', priority: 'high', status: 'pending', due: '2026-03-20', owner: '', notes: 'Need place ready before April 9' },
+  { id: 18, cat: 'relocation', task: 'Sign rental agreement & pay deposit', priority: 'high', status: 'pending', due: '2026-03-28', owner: '', notes: '' },
+  { id: 19, cat: 'relocation', task: 'Set up Mumbai utilities (electricity, gas, internet)', priority: 'medium', status: 'pending', due: '2026-04-12', owner: '', notes: '' },
+  { id: 20, cat: 'relocation', task: 'Get Indian SIM card / phone plan', priority: 'low', status: 'pending', due: '2026-04-10', owner: '', notes: '' },
+  { id: 21, cat: 'relocation', task: 'Update address on Aadhaar / PAN / voter ID', priority: 'high', status: 'pending', due: '2026-04-20', owner: '', notes: '' },
+  { id: 22, cat: 'relocation', task: 'Arrange shipping of belongings MY → India', priority: 'medium', status: 'pending', due: '2026-03-25', owner: '', notes: '' },
+  { id: 23, cat: 'relocation', task: 'Research schools / local amenities in area', priority: 'low', status: 'pending', due: '2026-03-15', owner: '', notes: '' },
 
-  // Reliance Onboarding
-  { id: 24, cat: 'reliance', task: 'Accept offer letter & sign employment contract', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 25, cat: 'reliance', task: 'Submit background verification documents', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 26, cat: 'reliance', task: 'Complete pre-joining medical checkup', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 27, cat: 'reliance', task: 'Set up Indian salary bank account (if needed)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 28, cat: 'reliance', task: 'Provide PAN, Aadhaar, past employment docs to HR', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 29, cat: 'reliance', task: 'Confirm joining date with Reliance HR', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  // Reliance Onboarding — joining around April 9
+  { id: 24, cat: 'reliance', task: 'Accept offer letter & sign employment contract', priority: 'high', status: 'pending', due: '2026-03-05', owner: '', notes: '' },
+  { id: 25, cat: 'reliance', task: 'Submit background verification documents', priority: 'high', status: 'pending', due: '2026-03-10', owner: '', notes: '' },
+  { id: 26, cat: 'reliance', task: 'Complete pre-joining medical checkup', priority: 'medium', status: 'pending', due: '2026-03-25', owner: '', notes: '' },
+  { id: 27, cat: 'reliance', task: 'Set up Indian salary bank account (if needed)', priority: 'high', status: 'pending', due: '2026-04-01', owner: '', notes: '' },
+  { id: 28, cat: 'reliance', task: 'Provide PAN, Aadhaar, past employment docs to HR', priority: 'high', status: 'pending', due: '2026-03-15', owner: '', notes: '' },
+  { id: 29, cat: 'reliance', task: 'Confirm joining date with Reliance HR', priority: 'high', status: 'pending', due: '2026-03-05', owner: '', notes: 'Joining April 9' },
 
   // Finance & Legal
-  { id: 30, cat: 'finance', task: 'Transfer funds from Malaysian to Indian bank', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 31, cat: 'finance', task: 'Update tax residency status (India)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 32, cat: 'finance', task: 'Review & update insurance (health, life)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 33, cat: 'finance', task: 'Update nominee details on investments & accounts', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 34, cat: 'finance', task: 'Get PCC (Police Clearance Certificate) from Malaysia if needed', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 30, cat: 'finance', task: 'Transfer funds from Malaysian to Indian bank', priority: 'high', status: 'pending', due: '2026-04-01', owner: '', notes: '' },
+  { id: 31, cat: 'finance', task: 'Update tax residency status (India)', priority: 'high', status: 'pending', due: '2026-04-15', owner: '', notes: '' },
+  { id: 32, cat: 'finance', task: 'Review & update insurance (health, life)', priority: 'medium', status: 'pending', due: '2026-04-20', owner: '', notes: '' },
+  { id: 33, cat: 'finance', task: 'Update nominee details on investments & accounts', priority: 'medium', status: 'pending', due: '2026-05-15', owner: '', notes: 'Update after marriage May 9' },
+  { id: 34, cat: 'finance', task: 'Get PCC (Police Clearance Certificate) from Malaysia if needed', priority: 'low', status: 'pending', due: '2026-03-20', owner: '', notes: '' },
 
   // Personal
-  { id: 35, cat: 'personal', task: 'Farewell dinners / goodbye with friends in MY', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 36, cat: 'personal', task: 'Update subscriptions & online accounts to new address', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
-  { id: 37, cat: 'personal', task: 'Redirect mail / update delivery addresses', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 35, cat: 'personal', task: 'Farewell dinners / goodbye with friends in MY', priority: 'low', status: 'pending', due: '2026-04-01', owner: '', notes: '' },
+  { id: 36, cat: 'personal', task: 'Update subscriptions & online accounts to new address', priority: 'low', status: 'pending', due: '2026-04-08', owner: '', notes: '' },
+  { id: 37, cat: 'personal', task: 'Redirect mail / update delivery addresses', priority: 'low', status: 'pending', due: '2026-04-08', owner: '', notes: '' },
 ];
 
 let tasks = [];
