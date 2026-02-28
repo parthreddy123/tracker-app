@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malaysia Exit & Mumbai Move Tracker</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 24px 32px; border-bottom: 1px solid #334155; }
+  .header h1 { font-size: 1.5rem; font-weight: 700; color: #f8fafc; }
+  .header p { color: #94a3b8; font-size: 0.85rem; margin-top: 4px; }
+
+  .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 24px 32px; }
+  .stat-card { background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155; }
+  .stat-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 8px; }
+  .stat-card .value { font-size: 1.8rem; font-weight: 700; }
+  .stat-card.total .value { color: #e2e8f0; }
+  .stat-card.done .value { color: #4ade80; }
+  .stat-card.progress .value { color: #facc15; }
+  .stat-card.pending .value { color: #94a3b8; }
+  .stat-card.overdue .value { color: #f87171; }
+
+  .progress-bar-container { margin: 0 32px 8px; background: #1e293b; border-radius: 12px; padding: 16px 20px; border: 1px solid #334155; }
+  .progress-bar-container .progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; color: #94a3b8; }
+  .progress-bar-bg { background: #334155; border-radius: 8px; height: 12px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, #4ade80, #22d3ee); transition: width 0.5s ease; }
+
+  .category-bars { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin: 16px 32px; }
+  .cat-bar { background: #1e293b; border-radius: 10px; padding: 14px 16px; border: 1px solid #334155; }
+  .cat-bar .cat-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: #cbd5e1; margin-bottom: 6px; }
+  .cat-bar .mini-bar-bg { background: #334155; border-radius: 6px; height: 6px; overflow: hidden; }
+  .cat-bar .mini-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+
+  .tabs { display: flex; gap: 4px; padding: 16px 32px 0; flex-wrap: wrap; }
+  .tab { padding: 10px 20px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 0.85rem; font-weight: 500; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-bottom: none; transition: all 0.2s; }
+  .tab:hover { color: #e2e8f0; background: #253045; }
+  .tab.active { background: #1e293b; color: #4ade80; border-color: #4ade80; border-bottom: 2px solid #1e293b; position: relative; top: 1px; }
+
+  .tab-content { background: #1e293b; margin: 0 32px 32px; border-radius: 0 12px 12px 12px; border: 1px solid #334155; padding: 20px; min-height: 300px; }
+
+  .add-task-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .add-task-bar input, .add-task-bar select { background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 8px 12px; color: #e2e8f0; font-size: 0.85rem; }
+  .add-task-bar input::placeholder { color: #64748b; }
+  .add-task-bar input[type="text"] { flex: 1; min-width: 200px; }
+  .add-task-bar input[type="date"] { width: 150px; }
+  .add-task-bar select { width: 130px; }
+  .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+  .btn-add { background: #4ade80; color: #0f172a; }
+  .btn-add:hover { background: #22c55e; }
+  .btn-del { background: #ef4444; color: #fff; padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; }
+  .btn-del:hover { background: #dc2626; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; border-bottom: 1px solid #334155; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1e293b; font-size: 0.85rem; vertical-align: middle; }
+  tr:hover td { background: #253045; }
+  td select, td input[type="date"] { background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 4px 8px; color: #e2e8f0; font-size: 0.8rem; }
+
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .status-pending { background: #334155; color: #94a3b8; }
+  .status-in-progress { background: #854d0e33; color: #facc15; }
+  .status-done { background: #16a34a33; color: #4ade80; }
+  .status-blocked { background: #dc262633; color: #f87171; }
+
+  .priority-high { color: #f87171; }
+  .priority-medium { color: #facc15; }
+  .priority-low { color: #94a3b8; }
+
+  td select { background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 4px 8px; color: #e2e8f0; font-size: 0.8rem; }
+
+  .owner-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; background: #312e81; color: #a5b4fc; }
+
+  .notes-input { background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 4px 8px; color: #e2e8f0; font-size: 0.8rem; width: 100%; min-width: 120px; }
+
+  .task-name { cursor: text; padding: 4px 6px; border-radius: 4px; border: 1px solid transparent; transition: border-color 0.2s; }
+  .task-name:hover { border-color: #475569; }
+  .task-name:focus { outline: none; border-color: #4ade80; background: #0f172a; }
+  .task-name.done-task { text-decoration: line-through; opacity: 0.6; }
+
+  .empty-state { text-align: center; padding: 48px; color: #64748b; }
+
+  .export-bar { padding: 0 32px 16px; display: flex; gap: 8px; }
+  .btn-export { background: #334155; color: #e2e8f0; }
+  .btn-export:hover { background: #475569; }
+
+  @media (max-width: 640px) {
+    .dashboard { grid-template-columns: repeat(2, 1fr); padding: 16px; }
+    .tabs { padding: 12px 16px 0; }
+    .tab-content { margin: 0 16px 16px; padding: 12px; }
+    .add-task-bar { flex-direction: column; }
+    .header { padding: 16px; }
+    .progress-bar-container, .category-bars, .export-bar { margin-left: 16px; margin-right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Malaysia Exit & Mumbai Move Tracker</h1>
+  <p>VP of Strategy, Reliance | Marriage Registration | Relocation</p>
+</div>
+
+<div class="dashboard" id="dashboard"></div>
+<div class="progress-bar-container">
+  <div class="progress-label"><span>Overall Progress</span><span id="progress-pct">0%</span></div>
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+</div>
+<div class="category-bars" id="category-bars"></div>
+
+<div class="export-bar">
+  <button class="btn btn-export" onclick="exportData()">Export JSON</button>
+  <button class="btn btn-export" onclick="importData()">Import JSON</button>
+  <input type="file" id="importFile" style="display:none" accept=".json">
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="tab-content" id="tab-content"></div>
+
+<script>
+const CATEGORIES = [
+  { id: 'malaysia_exit', label: 'Malaysia Exit', color: '#f87171' },
+  { id: 'marriage', label: 'Marriage & Registration', color: '#c084fc' },
+  { id: 'relocation', label: 'Mumbai Relocation', color: '#22d3ee' },
+  { id: 'reliance', label: 'Reliance Onboarding', color: '#fb923c' },
+  { id: 'finance', label: 'Finance & Legal', color: '#4ade80' },
+  { id: 'personal', label: 'Personal & Other', color: '#f472b6' }
+];
+
+const DEFAULT_TASKS = [
+  // Malaysia Exit
+  { id: 1, cat: 'malaysia_exit', task: 'Cancel/transfer rental lease agreement', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 2, cat: 'malaysia_exit', task: 'Close Malaysian bank accounts or convert to NR status', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 3, cat: 'malaysia_exit', task: 'Cancel Malaysian phone plan / port number', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 4, cat: 'malaysia_exit', task: 'File final Malaysian tax return / get tax clearance', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 5, cat: 'malaysia_exit', task: 'Cancel work permit / employment pass', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 6, cat: 'malaysia_exit', task: 'Settle utility bills (electricity, water, internet)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 7, cat: 'malaysia_exit', task: 'Ship / sell furniture & belongings', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 8, cat: 'malaysia_exit', task: 'Collect all deposits (rental, utilities)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 9, cat: 'malaysia_exit', task: 'Get employer relieving letter / experience certificate', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 10, cat: 'malaysia_exit', task: 'Book flights to Mumbai', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+
+  // Marriage & Registration
+  { id: 11, cat: 'marriage', task: 'Collect documents for marriage registration (birth certs, ID, photos)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 12, cat: 'marriage', task: 'Submit marriage notice at registrar office (30-day notice)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 13, cat: 'marriage', task: 'Arrange two witnesses for registration day', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 14, cat: 'marriage', task: 'Book marriage registration date & venue', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 15, cat: 'marriage', task: 'Get marriage certificate copies', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 16, cat: 'marriage', task: 'Update name/marital status on passport & documents', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+
+  // Mumbai Relocation
+  { id: 17, cat: 'relocation', task: 'Find apartment in Mumbai (shortlist areas)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 18, cat: 'relocation', task: 'Sign rental agreement & pay deposit', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 19, cat: 'relocation', task: 'Set up Mumbai utilities (electricity, gas, internet)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 20, cat: 'relocation', task: 'Get Indian SIM card / phone plan', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 21, cat: 'relocation', task: 'Update address on Aadhaar / PAN / voter ID', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 22, cat: 'relocation', task: 'Arrange shipping of belongings MY → India', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 23, cat: 'relocation', task: 'Research schools / local amenities in area', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+
+  // Reliance Onboarding
+  { id: 24, cat: 'reliance', task: 'Accept offer letter & sign employment contract', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 25, cat: 'reliance', task: 'Submit background verification documents', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 26, cat: 'reliance', task: 'Complete pre-joining medical checkup', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 27, cat: 'reliance', task: 'Set up Indian salary bank account (if needed)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 28, cat: 'reliance', task: 'Provide PAN, Aadhaar, past employment docs to HR', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 29, cat: 'reliance', task: 'Confirm joining date with Reliance HR', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+
+  // Finance & Legal
+  { id: 30, cat: 'finance', task: 'Transfer funds from Malaysian to Indian bank', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 31, cat: 'finance', task: 'Update tax residency status (India)', priority: 'high', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 32, cat: 'finance', task: 'Review & update insurance (health, life)', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 33, cat: 'finance', task: 'Update nominee details on investments & accounts', priority: 'medium', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 34, cat: 'finance', task: 'Get PCC (Police Clearance Certificate) from Malaysia if needed', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+
+  // Personal
+  { id: 35, cat: 'personal', task: 'Farewell dinners / goodbye with friends in MY', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 36, cat: 'personal', task: 'Update subscriptions & online accounts to new address', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+  { id: 37, cat: 'personal', task: 'Redirect mail / update delivery addresses', priority: 'low', status: 'pending', due: '', owner: '', notes: '' },
+];
+
+let tasks = [];
+let activeTab = 'malaysia_exit';
+let nextId = 100;
+
+function load() {
+  const saved = localStorage.getItem('tracker_tasks');
+  if (saved) {
+    try { tasks = JSON.parse(saved); nextId = Math.max(...tasks.map(t => t.id), 99) + 1; } catch(e) { tasks = [...DEFAULT_TASKS]; }
+  } else {
+    tasks = [...DEFAULT_TASKS];
+  }
+}
+
+function save() {
+  localStorage.setItem('tracker_tasks', JSON.stringify(tasks));
+}
+
+function getStats() {
+  const total = tasks.length;
+  const done = tasks.filter(t => t.status === 'done').length;
+  const inProgress = tasks.filter(t => t.status === 'in-progress').length;
+  const pending = tasks.filter(t => t.status === 'pending').length;
+  const overdue = tasks.filter(t => {
+    if (!t.due || t.status === 'done') return false;
+    return new Date(t.due) < new Date(new Date().toDateString());
+  }).length;
+  return { total, done, inProgress, pending, overdue };
+}
+
+function getCatStats(catId) {
+  const catTasks = tasks.filter(t => t.cat === catId);
+  const total = catTasks.length;
+  const done = catTasks.filter(t => t.status === 'done').length;
+  return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
+}
+
+function renderDashboard() {
+  const s = getStats();
+  const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
+  document.getElementById('dashboard').innerHTML = `
+    <div class="stat-card total"><div class="label">Total Tasks</div><div class="value">${s.total}</div></div>
+    <div class="stat-card done"><div class="label">Completed</div><div class="value">${s.done}</div></div>
+    <div class="stat-card progress"><div class="label">In Progress</div><div class="value">${s.inProgress}</div></div>
+    <div class="stat-card pending"><div class="label">Pending</div><div class="value">${s.pending}</div></div>
+    <div class="stat-card overdue"><div class="label">Overdue</div><div class="value">${s.overdue}</div></div>
+  `;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  document.getElementById('category-bars').innerHTML = CATEGORIES.map(cat => {
+    const cs = getCatStats(cat.id);
+    return `<div class="cat-bar">
+      <div class="cat-label"><span>${cat.label}</span><span>${cs.done}/${cs.total}</span></div>
+      <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${cs.pct}%;background:${cat.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = CATEGORIES.map(cat =>
+    `<div class="tab ${activeTab === cat.id ? 'active' : ''}" onclick="switchTab('${cat.id}')">${cat.label}</div>`
+  ).join('');
+}
+
+function switchTab(catId) {
+  activeTab = catId;
+  renderTabs();
+  renderTable();
+}
+
+function renderTable() {
+  const catTasks = tasks.filter(t => t.cat === activeTab);
+  const cat = CATEGORIES.find(c => c.id === activeTab);
+
+  if (catTasks.length === 0) {
+    document.getElementById('tab-content').innerHTML = `
+      <div class="add-task-bar">
+        <input type="text" id="newTask" placeholder="Add a new task..." onkeydown="if(event.key==='Enter')addTask()">
+        <select id="newPriority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+        <input type="date" id="newDue">
+        <select id="newOwner"><option value="">Assign to...</option><option value="Me">Me</option><option value="Fiancée">Fiancée</option><option value="Both">Both</option></select>
+        <button class="btn btn-add" onclick="addTask()">+ Add</button>
+      </div>
+      <div class="empty-state">No tasks yet in ${cat.label}. Add one above!</div>`;
+    return;
+  }
+
+  const rows = catTasks.map(t => {
+    const isOverdue = t.due && t.status !== 'done' && new Date(t.due) < new Date(new Date().toDateString());
+    const escapedTask = t.task.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const escapedNotes = t.notes.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return `<tr data-id="${t.id}">
+      <td>
+        <select onchange="updateField(${t.id},'status',this.value)">
+          <option value="pending" ${t.status==='pending'?'selected':''}>Pending</option>
+          <option value="in-progress" ${t.status==='in-progress'?'selected':''}>In Progress</option>
+          <option value="done" ${t.status==='done'?'selected':''}>Done</option>
+          <option value="blocked" ${t.status==='blocked'?'selected':''}>Blocked</option>
+        </select>
+      </td>
+      <td><span class="task-name ${t.status==='done'?'done-task':''}" contenteditable="true" onblur="updateField(${t.id},'task',this.textContent)">${escapedTask}</span></td>
+      <td>
+        <select onchange="updateField(${t.id},'priority',this.value)">
+          <option value="high" ${t.priority==='high'?'selected':''}>high</option>
+          <option value="medium" ${t.priority==='medium'?'selected':''}>medium</option>
+          <option value="low" ${t.priority==='low'?'selected':''}>low</option>
+        </select>
+      </td>
+      <td style="${isOverdue?'color:#f87171;font-weight:600':''}">
+        <input type="date" value="${t.due}" onchange="updateField(${t.id},'due',this.value)">
+      </td>
+      <td>
+        <select onchange="updateField(${t.id},'owner',this.value)">
+          <option value="" ${!t.owner?'selected':''}>&#8212;</option>
+          <option value="Me" ${t.owner==='Me'?'selected':''}>Me</option>
+          <option value="Fiancée" ${t.owner==='Fiancée'?'selected':''}>Fiancée</option>
+          <option value="Both" ${t.owner==='Both'?'selected':''}>Both</option>
+        </select>
+      </td>
+      <td><input class="notes-input" value="${escapedNotes}" oninput="updateFieldQuiet(${t.id},'notes',this.value)" placeholder="Add notes..."></td>
+      <td><button class="btn btn-del" onclick="deleteTask(${t.id})">&#10005;</button></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tab-content').innerHTML = `
+    <div class="add-task-bar">
+      <input type="text" id="newTask" placeholder="Add a new task..." onkeydown="if(event.key==='Enter')addTask()">
+      <select id="newPriority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+      <input type="date" id="newDue">
+      <select id="newOwner"><option value="">Assign to...</option><option value="Me">Me</option><option value="Fiancée">Fiancée</option><option value="Both">Both</option></select>
+      <button class="btn btn-add" onclick="addTask()">+ Add</button>
+    </div>
+    <table>
+      <thead><tr><th>Status</th><th>Task</th><th>Priority</th><th>Due Date</th><th>Owner</th><th>Notes</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function addTask() {
+  const input = document.getElementById('newTask');
+  const text = input.value.trim();
+  if (!text) return;
+  tasks.push({
+    id: nextId++,
+    cat: activeTab,
+    task: text,
+    priority: document.getElementById('newPriority').value,
+    status: 'pending',
+    due: document.getElementById('newDue').value,
+    owner: document.getElementById('newOwner').value,
+    notes: ''
+  });
+  save(); render();
+}
+
+function updateField(id, field, value) {
+  const t = tasks.find(t => t.id === id);
+  if (t) {
+    t[field] = value;
+    save();
+    renderDashboard();
+    // Only re-render table for status changes (affects styling) not for typing fields
+    if (field === 'status') renderTable();
+  }
+}
+
+function updateFieldQuiet(id, field, value) {
+  const t = tasks.find(t => t.id === id);
+  if (t) { t[field] = value; save(); }
+}
+
+function deleteTask(id) {
+  if (confirm('Delete this task?')) {
+    tasks = tasks.filter(t => t.id !== id);
+    save(); render();
+  }
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tracker_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function importData() {
+  document.getElementById('importFile').click();
+}
+
+document.getElementById('importFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      tasks = JSON.parse(ev.target.result);
+      nextId = Math.max(...tasks.map(t => t.id), 99) + 1;
+      save(); render();
+      alert('Imported successfully!');
+    } catch(err) { alert('Invalid file.'); }
+  };
+  reader.readAsText(file);
+  this.value = '';
+});
+
+function render() {
+  renderDashboard();
+  renderTabs();
+  renderTable();
+}
+
+load();
+render();
+</script>
+</body>
+</html>
